@@ -1,0 +1,57 @@
+# fly.toml file generated for blog5 on 2022-11-21T19:23:06+02:00HOST
+
+app = "blog5"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[env]
+
+  # Common
+  HOST = "0.0.0.0"
+  PORT = "8080"
+
+  # Mailer
+  MAILER_HOST = "smtp.gmail.com"
+
+  # Facebook auth
+  FB_APP_REDIRECT_URL = "https://blog5.fly.dev/auth/facebook/redirect"
+
+  # Google
+  OAUTH_GOOGLE_REDIRECT_URL = "https://blog5.fly.dev/auth/google/redirect"
+
+  # Twitter auth
+  TW_APP_URL = "https://blog5.fly.dev/auth/twitter/redirect"
+
+  # JWT
+  EXPIRE_TIME = "24h"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 8080
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+  [services.concurrency]
+    hard_limit = 25
+    soft_limit = 20
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "1s"
+    interval = "15s"
+    restart_limit = 0
+    timeout = "2s"
